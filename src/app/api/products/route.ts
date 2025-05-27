@@ -7,7 +7,7 @@ import fs from "node:fs";
 import { desc } from "drizzle-orm";
 
 export async function POST(request: Request) {
-  // todo: check user access.
+ 
   const data = await request.formData();
 
   let validatedData;
@@ -15,7 +15,7 @@ export async function POST(request: Request) {
     validatedData = productSchema.parse({
       name: data.get("name"),
       description:
-        data.get("description") || data.get("description") || undefined,
+        data.get("description"),
       price: Number(data.get("price")),
       image: data.get("image"),
     });
@@ -75,3 +75,4 @@ export async function GET() {
     );
   }
 }
+
