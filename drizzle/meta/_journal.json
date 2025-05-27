@@ -15,6 +15,13 @@
       "when": 1748293942329,
       "tag": "0001_perfect_vertigo",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1748370089029,
+      "tag": "0002_superb_lord_tyger",
+      "breakpoints": true
     }
   ]
 }
