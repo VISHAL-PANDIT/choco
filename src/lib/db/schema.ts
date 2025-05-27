@@ -14,7 +14,7 @@ export const users = pgTable("users" ,{
     createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`)
 })
 
-export const porducts = pgTable("products",{
+export const products = pgTable("products",{
     id: serial("id").primaryKey(),
     name: varchar("name", {length: 100}).notNull(),
     image: text("image"),

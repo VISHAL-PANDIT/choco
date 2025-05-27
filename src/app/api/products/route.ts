@@ -1,18 +1,21 @@
 import { db } from "@/lib/db/db";
-import { porducts } from "@/lib/db/schema";
+import { products } from "@/lib/db/schema";
 import { productSchema } from "@/lib/validators/productSchema";
 import { writeFile, mkdir } from "node:fs/promises";
 import path from "node:path";
 import fs from "node:fs";
+import { desc } from "drizzle-orm";
 
 export async function POST(request: Request) {
+  // todo: check user access.
   const data = await request.formData();
 
   let validatedData;
   try {
     validatedData = productSchema.parse({
       name: data.get("name"),
-      description: data.get("description") || data.get("description") || undefined,
+      description:
+        data.get("description") || data.get("description") || undefined,
       price: Number(data.get("price")),
       image: data.get("image"),
     });
@@ -30,10 +33,7 @@ export async function POST(request: Request) {
     await mkdir(assetsDir, { recursive: true });
 
     const buffer = Buffer.from(await validatedData.image.arrayBuffer());
-    await writeFile(
-      path.join(assetsDir, filename),
-      buffer
-    );
+    await writeFile(path.join(assetsDir, filename), buffer);
   } catch (err) {
     return Response.json(
       { message: "Failed to save the file to fs", error: err },
@@ -41,7 +41,7 @@ export async function POST(request: Request) {
     );
   }
   try {
-    await db.insert(porducts).values({ ...validatedData, image: filename });
+    await db.insert(products).values({ ...validatedData, image: filename });
   } catch (error) {
     // remove stored image from fs
     fs.unlink(filename, (unlinkErr) => {
@@ -59,4 +59,19 @@ export async function POST(request: Request) {
   }
 
   return Response.json({ message: "OK" }, { status: 201 });
+}
+
+export async function GET() {
+  try {
+    const allProducts = await db
+      .select()
+      .from(products)
+      .orderBy(desc(products.id));
+    return Response.json(allProducts);
+  } catch (error) {
+    return Response.json(
+      { message: "Failed to fetch products", error: error },
+      { status: 500 }
+    );
+  }
 }
