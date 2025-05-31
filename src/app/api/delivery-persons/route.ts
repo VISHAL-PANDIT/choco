@@ -1,6 +1,7 @@
 import { db } from "@/lib/db/db";
-import { deliveryPersons } from "@/lib/db/schema";
+import { deliveryPersons, warehouses } from "@/lib/db/schema";
 import { deliveryPersonSchema } from "@/lib/validators/deliveryPersonsSchema";
+import { desc, eq } from "drizzle-orm";
 
 export async function POST(request: Request) {
   const requestData = await request.json();
@@ -28,7 +29,16 @@ export async function POST(request: Request) {
 
 export async function GET() {
   try {
-    const allDeliveryPerson = await db.select().from(deliveryPersons);
+    const allDeliveryPerson = await db
+      .select({
+        id: deliveryPersons.id,
+        name: deliveryPersons.name,
+        phone: deliveryPersons.phone,
+        warehouse: warehouses.name,
+      })
+      .from(deliveryPersons)
+      .leftJoin(warehouses, eq(deliveryPersons.warehouseId, warehouses.id))
+      .orderBy(desc(deliveryPersons.id));
     return Response.json({ allDeliveryPerson });
   } catch (error) {
     return Response.json(
