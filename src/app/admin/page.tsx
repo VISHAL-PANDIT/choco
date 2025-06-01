@@ -1,9 +1,9 @@
-import { Button } from "@/components/ui/button";
+import { SectionCards } from "@/components/section-cards";
 
 const AdminPage = () => {
   return (
     <div>
-      <Button>AdminPage</Button>
+       <SectionCards/>
     </div>
   );
 };
