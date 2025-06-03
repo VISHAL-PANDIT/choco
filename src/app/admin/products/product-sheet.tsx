@@ -16,7 +16,8 @@ const ProductSheet = () => {
         mutationFn: (data : FormData) => createProduct(data),
         onSuccess: ()=>{
             queryClient.invalidateQueries({queryKey: ["products"]});
-            alert("Product Created!")
+            alert("Product Created!");
+            onClose();
         }
     })
 
