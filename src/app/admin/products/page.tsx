@@ -1,14 +1,15 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { columns } from "./Columns";
-import { DataTable } from "./data-table";
+import { columns } from "./_components/Columns";
+import { DataTable } from "../../../components/DataTable/data-table";
 import { useQuery } from "@tanstack/react-query";
 import { getAllProducts } from "@/http/api";
 import { Product } from "@/types";
-import ProductSheet from "./product-sheet";
+
 import { useNewProduct } from "@/store/product/product-store";
 import { Loader2 } from "lucide-react";
+import ProductSheet from "./_components/product-sheet";
 
 const ProductsPage = () => {
   const { onOpen } = useNewProduct();
@@ -36,7 +37,7 @@ const ProductsPage = () => {
         </div>
       </div>
 
-      {isError && <span className="text-red-600">Someting went wrong</span>}
+      {isError && <span className="text-red-600">Something went wrong</span>}
 
       <div className="px-5 ">
         {isLoading ? (

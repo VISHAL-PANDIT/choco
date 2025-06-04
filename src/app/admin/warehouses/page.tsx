@@ -1,17 +1,18 @@
 "use client";
 
-import { columns } from "./Columns";
-import { DataTable } from "./data-table";
+import { columns } from "./_components/Columns";
+
 import { useQuery } from "@tanstack/react-query";
 import { getAllWarehouses } from "@/http/api";
 import { Warehouse } from "@/types";
 import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useNewProduct } from "@/store/product/product-store";
-import WarehouseSheet from "./warehouse-sheet";
+import WarehouseSheet from "./_components/warehouse-sheet";
+import { DataTable } from "@/components/DataTable/data-table";
+import { useNewWarehouse } from "@/store/warehouse/warehouse-store";
 
 const WarehousePage = () => {
-  const { onOpen } = useNewProduct();
+  const { onOpen } = useNewWarehouse();
   const {
     data: warehouses = [],
     isLoading,

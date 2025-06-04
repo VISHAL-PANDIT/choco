@@ -7,23 +7,23 @@ import {
 } from "@/components/ui/sheet";
 import React from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import {  CreateWarehouses } from "@/http/api";
+import { createDeliveryPersons } from "@/http/api";
 import { toast } from "sonner";
 
 import { useNewProduct } from "@/store/product/product-store";
-import CreateWarehousesForm, { FormValue } from "./create-warehouses-form";
+import CreatePersonForm, { FormValue } from "./create-persons-form";
 
-const WarehouseSheet = () => {
+const DeliveryPersonSheet = () => {
   const { isOpen, onClose } = useNewProduct();
   const queryClient = useQueryClient();
 
   const { mutate, isPending } = useMutation({
-    mutationKey: ["create-warehouse"],
-    mutationFn: (data: { name: string; pincode: string;  }) =>
-      CreateWarehouses(data),
+    mutationKey: ["create-delivery-person"],
+    mutationFn: (data: { name: string; phone: string; warehouseId: number }) =>
+      createDeliveryPersons(data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["warehouses"] });
-      toast("Warehouse has been Created");
+      queryClient.invalidateQueries({ queryKey: ["delivery-persons"] });
+      toast("Delivery Person has been Created");
       onClose();
     },
   });
@@ -31,7 +31,8 @@ const WarehouseSheet = () => {
   const onSubmit = (values: FormValue) => {
     mutate({
       name: values.name,
-      pincode: values.pincode,
+      phone: values.phone,
+      warehouseId: values.warehouseId,
     });
   };
 
@@ -40,14 +41,14 @@ const WarehouseSheet = () => {
       <Sheet open={isOpen} onOpenChange={onClose}>
         <SheetContent side="right">
           <SheetHeader>
-            <SheetTitle>Add Warehouse</SheetTitle>
-            <SheetDescription>Add a new warehouse to your system</SheetDescription>
+            <SheetTitle>Add Delivery Person</SheetTitle>
+            <SheetDescription>Add a new Delivery Person</SheetDescription>
           </SheetHeader>
-          <CreateWarehousesForm onSubmit={onSubmit} disabled={isPending} />
+          <CreatePersonForm onSubmit={onSubmit} disabled={isPending} />
         </SheetContent>
       </Sheet>
     </div>
   );
 };
 
-export default WarehouseSheet;
+export default DeliveryPersonSheet;

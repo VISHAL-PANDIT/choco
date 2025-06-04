@@ -1,17 +1,20 @@
 "use client";
 
-import { columns } from "./Columns";
-import { DataTable } from "./data-table";
+import { columns } from "./_components/Columns";
+
 import { useQuery } from "@tanstack/react-query";
 import { getAllDeliveryPersons } from "@/http/api";
 import { DeliveryPerson } from "@/types";
 import { Loader2 } from "lucide-react";
-import DeliveryPersonSheet from "./deliveryPerson-sheet";
+
 import { Button } from "@/components/ui/button";
-import { useNewProduct } from "@/store/product/product-store";
+import { DataTable } from "@/components/DataTable/data-table";
+import DeliveryPersonSheet from "./_components/deliveryPerson-sheet";
+import { useNewDeliveryPerson } from "@/store/delivery-person/delivery-person-store";
+
 
 const DeliveryPersonPage = () => {
-  const { onOpen } = useNewProduct();
+  const { onOpen } = useNewDeliveryPerson();
   const {
     data: deliveryPersons = [],
     isLoading,
