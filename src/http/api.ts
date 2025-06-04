@@ -45,15 +45,27 @@ export const createDeliveryPersons = async (data: {
 };
 
 interface WarehouseResponse {
-  warehouses: Warehouse[];
+  AllWarehouses: Warehouse[];
 }
 
 export const getAllWarehouses = async () => {
   try {
     const response = await api.get<WarehouseResponse>("/warehouses");
-    return response.data.warehouses;
+    return response.data;
   } catch (error) {
     console.error("API Error:", error);
     throw error;
   }
+};
+
+export const CreateWarehouses = async (data: {
+  name: string;
+  pincode: string;
+}) => {
+  const response = await api.post("/warehouses", data, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  return response.data;
 };

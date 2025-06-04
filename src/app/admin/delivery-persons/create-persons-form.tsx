@@ -2,12 +2,14 @@ import React from 'react'
 import {zodResolver} from "@hookform/resolvers/zod"
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
-import { Form, FormControl,  FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
-
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Loader2 } from 'lucide-react'
 import { deliveryPersonSchema } from '@/lib/validators/deliveryPersonsSchema'
+import { useQuery } from '@tanstack/react-query'
+import { getAllWarehouses } from '@/http/api'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 
 export type FormValue = z.input<typeof deliveryPersonSchema>
 
@@ -17,7 +19,18 @@ const CreatePersonForm = ({onSubmit , disabled}: {onSubmit: (FormValue: FormValu
         defaultValues: {
             name: '',
             phone: '',
-            warehouseId:1
+            warehouseId: undefined
+        }
+    })
+
+    const {
+        data: warehouses = [],
+        isLoading: isLoadingWarehouses
+    } = useQuery({
+        queryKey: ['warehouses'],
+        queryFn: async () => {
+            const response = await getAllWarehouses();
+            return response.AllWarehouses || [];
         }
     })
 
@@ -66,17 +79,39 @@ const CreatePersonForm = ({onSubmit , disabled}: {onSubmit: (FormValue: FormValu
                         name="warehouseId"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Warehouse ID</FormLabel>
-                                <FormControl>
-                                    <Input 
-                                        type='number' 
-                                        value={field.value || ''}
-                                        onChange={(e) => {
-                                            const value = e.target.value ? Number(e.target.value) : '';
-                                            field.onChange(value);
-                                        }}
-                                    />
-                                </FormControl>
+                                <FormLabel>Warehouse</FormLabel>
+                                <Select 
+                                    onValueChange={(value) => field.onChange(Number(value))}
+                                    value={field.value?.toString()}
+                                >
+                                    <FormControl>
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="Select a warehouse" />
+                                        </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                        {isLoadingWarehouses ? (
+                                            <SelectItem value="loading" disabled>
+                                                Loading warehouses...
+                                            </SelectItem>
+                                        ) : (
+                                            Array.from(new Set(warehouses.map(w => w.name)))
+                                                .map(uniqueName => {
+                                                    const warehouse = warehouses.find(w => w.name === uniqueName);
+                                                    if (!warehouse) return null;
+                                                    return (
+                                                        <SelectItem 
+                                                            key={warehouse.id} 
+                                                            value={warehouse.id.toString()}
+                                                        >
+                                                            {uniqueName}
+                                                        </SelectItem>
+                                                    );
+                                                })
+                                                .filter(Boolean)
+                                        )}
+                                    </SelectContent>
+                                </Select>
                                 <FormMessage />
                             </FormItem>
                         )}
