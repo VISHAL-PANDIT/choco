@@ -12,6 +12,9 @@ import { useNewInventory } from "@/store/inventory/inventory-store";
 import { getAllInvtories } from "@/http/api";
 import InventorySheet from "./_components/inventorySheet";
 
+interface InventoryResponse {
+  allInventories: Inventory[];
+}
 
 const InventoryPage = () => {
   const { onOpen } = useNewInventory();
@@ -23,11 +26,9 @@ const InventoryPage = () => {
   } = useQuery<Inventory[]>({
     queryKey: ["inventories"],
     queryFn: async () => {
-      try {
-        console.log("Fetching inventories...");
+      try {  
         const response = await getAllInvtories();
-        console.log("Response:", response);
-        return response.allInventories as Inventory[];
+        return (response as InventoryResponse).allInventories;
       } catch (err) {
         console.error("Error fetching inventories:", err);
         throw err;

@@ -9,6 +9,7 @@ import { Loader2 } from 'lucide-react'
 import { useQuery } from '@tanstack/react-query'
 import { getAllWarehouses, getAllProducts } from '@/http/api'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Product } from '@/types'
 
 const inventorySchema = z.object({
   sku: z.string().min(1, "SKU is required"),
@@ -40,13 +41,13 @@ const CreateInventoryForm = ({onSubmit, disabled}: {onSubmit: (FormValue: FormVa
     })
 
     const {
-        data: products = [],
+        data: products = [] as Product[],
         isLoading: isLoadingProducts
-    } = useQuery({
+    } = useQuery<Product[]>({
         queryKey: ['products'],
         queryFn: async () => {
             const response = await getAllProducts();
-            return response || [];
+            return response as Product[];
         }
     })
 
