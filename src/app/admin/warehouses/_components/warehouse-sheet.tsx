@@ -9,12 +9,11 @@ import React from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { CreateWarehouses } from "@/http/api";
 import { toast } from "sonner";
-
-import { useNewProduct } from "@/store/product/product-store";
 import CreateWarehousesForm, { FormValue } from "./create-warehouses-form";
+import { useNewWarehouse } from "@/store/warehouse/warehouse-store";
 
 const WarehouseSheet = () => {
-  const { isOpen, onClose } = useNewProduct();
+  const { isOpen, onClose } = useNewWarehouse();
   const queryClient = useQueryClient();
 
   const { mutate, isPending } = useMutation({

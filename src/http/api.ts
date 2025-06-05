@@ -69,3 +69,33 @@ export const CreateWarehouses = async (data: {
   });
   return response.data;
 };
+
+export const getAllInvtories = async() => {
+  try {
+    console.log('Fetching inventories from:', process.env.NEXT_PUBLIC_BACKEND_URL + '/inventories');
+    const response = await api.get("/inventories");
+    console.log('Inventories response:', response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching inventories:', error);
+    throw error;
+  }
+}
+
+export const createInventory = async (data: {
+  sku: string;
+  warehouseId: number;
+  productId: number;
+}) => {
+  try {
+    const response = await api.post("/inventories", data, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error creating inventory:', error);
+    throw error;
+  }
+}

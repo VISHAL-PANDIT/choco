@@ -32,7 +32,7 @@ export async function GET() {
       .select({
         id: inventories.id,
         sku: inventories.sku,
-        warehouseId: warehouses.name,
+        warehouse: warehouses.name,
         product: products.name,
       })
       .from(inventories)

@@ -10,11 +10,11 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createDeliveryPersons } from "@/http/api";
 import { toast } from "sonner";
 
-import { useNewProduct } from "@/store/product/product-store";
 import CreatePersonForm, { FormValue } from "./create-persons-form";
+import { useNewDeliveryPerson } from "@/store/delivery-person/delivery-person-store";
 
 const DeliveryPersonSheet = () => {
-  const { isOpen, onClose } = useNewProduct();
+  const { isOpen, onClose } = useNewDeliveryPerson();
   const queryClient = useQueryClient();
 
   const { mutate, isPending } = useMutation({

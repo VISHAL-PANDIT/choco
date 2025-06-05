@@ -14,4 +14,12 @@ export interface DeliveryPerson {
 export interface Warehouse {
   id: number;
   name: string;
+  pincode:string;
+}
+
+export interface Inventory {
+  id:number;
+  sku: string;
+  warehouse: string;
+  product:string;
 }
