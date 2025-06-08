@@ -61,12 +61,23 @@ const SingleProduct = () => {
 
   const qty = form.watch("qty");
   const price = React.useMemo(() => {
-   
     if (product?.price) {
-      return product.price * qty;
+      // Ensure quantity is always positive and at least 1
+      const safeQuantity = Math.abs(Math.max(1, qty || 1));
+      return Math.abs(product.price * safeQuantity);
     }
     return 0;
   }, [qty, product]);
+
+  const handleQuantityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = parseInt(e.target.value);
+    // If value is negative or less than 1, set to 1
+    if (isNaN(value) || value < 1) {
+      form.setValue("qty", 1);
+      return;
+    }
+    form.setValue("qty", value);
+  };
 
   return (
     <div>
@@ -184,9 +195,29 @@ const SingleProduct = () => {
                               <FormControl>
                                 <Input
                                   type="number"
+                                  min="1"
                                   className="h-9 border-amber-200 bg-white placeholder:text-gray-300 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-amber-400 focus-visible:ring-offset-0 "
                                   placeholder="e.g. 1"
                                   {...field}
+                                  onKeyDown={(e) => {
+                                    // Prevent negative sign and decimal point
+                                    if (e.key === '-' || e.key === '.') {
+                                      e.preventDefault();
+                                    }
+                                  }}
+                                  onChange={(e) => {
+                                    handleQuantityChange(e);
+                                    field.onChange(e);
+                                  }}
+                                  onBlur={(e) => {
+                                    // Ensure value is at least 1 on blur
+                                    const value = parseInt(e.target.value);
+                                    if (isNaN(value) || value < 1) {
+                                      e.target.value = "1";
+                                      form.setValue("qty", 1);
+                                    }
+                                    field.onBlur();
+                                  }}
                                 />
                               </FormControl>
                               <FormMessage className="text-xs" />
@@ -197,7 +228,8 @@ const SingleProduct = () => {
                     </div>
                     <Separator className="my-6 bg-amber-900" />
                     <div className="flex items-center justify-between">
-                      <span className="text-3xl font-semibold">${price}</span>
+                      <span className="text-3xl font-semibold">${price}
+                        </span>
                       {session ? (
                         <Button type="submit">Buy Now</Button>
                       ) : (
