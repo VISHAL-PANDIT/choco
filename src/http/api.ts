@@ -99,3 +99,14 @@ export const createInventory = async (data: {
     throw error;
   }
 }
+
+export const getSingleProduct = async(id: string) => {
+  try {
+     const response = await api.get(`/products/${id}`);
+    console.log('Inventories response:', response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching inventories:', error);
+    throw error;
+  }
+}
