@@ -31,7 +31,7 @@ import Link from "next/link";
 const SingleProduct = () => {
   const params = useParams();
   const pathname = usePathname();
-  
+
   const id = params.id;
 
   const { data: session } = useSession();
@@ -58,6 +58,15 @@ const SingleProduct = () => {
     //submit the form
     console.log("Values", values);
   };
+
+  const qty = form.watch("qty");
+  const price = React.useMemo(() => {
+   
+    if (product?.price) {
+      return product.price * qty;
+    }
+    return 0;
+  }, [qty, product]);
 
   return (
     <div>
@@ -188,12 +197,12 @@ const SingleProduct = () => {
                     </div>
                     <Separator className="my-6 bg-amber-900" />
                     <div className="flex items-center justify-between">
-                      <span className="text-3xl font-semibold">$50</span>
+                      <span className="text-3xl font-semibold">${price}</span>
                       {session ? (
                         <Button type="submit">Buy Now</Button>
                       ) : (
                         <Link href={`/api/auth/signin?callbackUrl=${pathname}`}>
-                          <Button >Buy Now</Button>
+                          <Button>Buy Now</Button>
                         </Link>
                       )}
                     </div>
