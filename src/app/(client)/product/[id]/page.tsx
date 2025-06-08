@@ -10,10 +10,29 @@ import { Product } from "@/types";
 import { Star } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Separator } from "@/components/ui/separator";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { orderSchema } from "@/lib/validators/orderSchema";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 const SingleProduct = () => {
   const params = useParams();
   const id = params.id;
+
+  const form = useForm<z.infer<typeof orderSchema>>({
+    resolver: zodResolver(orderSchema),
+    defaultValues: {
+      address: "",
+      pincode: "",
+      qty: 1,
+      productId: Number(id),
+    },
+  });
+
   const { data: product, isLoading } = useQuery<Product>({
     queryKey: ["products", id],
     queryFn: async (): Promise<Product> => {
@@ -21,6 +40,11 @@ const SingleProduct = () => {
       return response as Product;
     },
   });
+  type FormValues= z.infer<typeof orderSchema>
+  const onSubmit = (values:FormValues) => {
+    //submit the form
+    console.log("Values",values);
+  }
 
   return (
     <div>
@@ -62,6 +86,7 @@ const SingleProduct = () => {
                 <Separator className="my-6 bg-amber-900" />
                 <div className="flex items-center justify-between">
                   <Skeleton className="h-10 w-28 bg-amber-100" />
+                  <Skeleton className="h-10 w-60 bg-amber-100" />
                 </div>
               </>
             ) : (
@@ -84,6 +109,67 @@ const SingleProduct = () => {
                   <span className="text-sm">144 Review</span>
                 </div>
                 <p className="mt-1">{product?.description}</p>
+
+                <Form {...form}>
+                    <form onSubmit={form.handleSubmit(onSubmit)}>
+                        <div className="flex gap-x-2 mt-2">
+                            <FormField 
+                                control={form.control}
+                                name="address"
+                                render={({field}) => {
+                                    return <FormItem className="w-3/6">
+                                        <FormLabel>Address</FormLabel>
+                                        <FormControl>
+                                            <Textarea className="border-amber-200 bg-white placeholder:text-gray-300 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-amber-400 focus-visible:ring-offset-0" 
+                                            placeholder="e.g. Open Street 55"
+                                            {...field}
+                                            />
+                                        </FormControl>
+                                        <FormMessage className="text-xs"/>
+                                    </FormItem>
+                                }}
+                            />
+                            <FormField 
+                                control={form.control}
+                                name="pincode"
+                                render={({field}) => {
+                                    return <FormItem className="w-3/6">
+                                        <FormLabel>Pincode</FormLabel>
+                                        <FormControl>
+                                            <Input type="number" className="h-9 border-amber-200 bg-white placeholder:text-gray-300 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-amber-400 focus-visible:ring-offset-0 "
+                                            placeholder="e.g. 596532"
+                                            {...field}
+                                            />
+                                        </FormControl>
+                                        <FormMessage className="text-xs"/>
+                                    </FormItem>
+                                }}
+                            />
+                            <FormField 
+                                control={form.control}
+                                name="qty"
+                                render={({field}) => {
+                                    return <FormItem className="w-3/6">
+                                        <FormLabel>Qty</FormLabel>
+                                        <FormControl>
+                                            <Input type="number" className="h-9 border-amber-200 bg-white placeholder:text-gray-300 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-amber-400 focus-visible:ring-offset-0 "
+                                            placeholder="e.g. 1"
+                                            {...field}
+                                            />
+                                        </FormControl>
+                                        <FormMessage className="text-xs"/>
+                                    </FormItem>
+                                }}
+                            />
+                        </div>
+                        <Separator className="my-6 bg-amber-900"/>
+                        <div className="flex items-center justify-between">
+                                <span className="text-3xl font-semibold">$50</span>
+                                <Button type="submit">Buy Now</Button>
+                        </div>
+                    </form>
+                </Form>
+                
               </>
             )}
           </div>
