@@ -1,7 +1,7 @@
 "use client";
 import { getSingleProduct } from "@/http/api";
 import { useQuery } from "@tanstack/react-query";
-import { useParams } from "next/navigation";
+import { useParams, usePathname } from "next/navigation";
 import React from "react";
 import Header from "../../_components/Header";
 import MainContainer from "../../_components/MainContainer";
@@ -14,14 +14,27 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { orderSchema } from "@/lib/validators/orderSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { useSession } from "next-auth/react";
+import Link from "next/link";
 
 const SingleProduct = () => {
   const params = useParams();
+  const pathname = usePathname();
+  
   const id = params.id;
+
+  const { data: session } = useSession();
 
   const form = useForm<z.infer<typeof orderSchema>>({
     resolver: zodResolver(orderSchema),
@@ -40,11 +53,11 @@ const SingleProduct = () => {
       return response as Product;
     },
   });
-  type FormValues= z.infer<typeof orderSchema>
-  const onSubmit = (values:FormValues) => {
+  type FormValues = z.infer<typeof orderSchema>;
+  const onSubmit = (values: FormValues) => {
     //submit the form
-    console.log("Values",values);
-  }
+    console.log("Values", values);
+  };
 
   return (
     <div>
@@ -111,65 +124,81 @@ const SingleProduct = () => {
                 <p className="mt-1">{product?.description}</p>
 
                 <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)}>
-                        <div className="flex gap-x-2 mt-2">
-                            <FormField 
-                                control={form.control}
-                                name="address"
-                                render={({field}) => {
-                                    return <FormItem className="w-3/6">
-                                        <FormLabel>Address</FormLabel>
-                                        <FormControl>
-                                            <Textarea className="border-amber-200 bg-white placeholder:text-gray-300 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-amber-400 focus-visible:ring-offset-0" 
-                                            placeholder="e.g. Open Street 55"
-                                            {...field}
-                                            />
-                                        </FormControl>
-                                        <FormMessage className="text-xs"/>
-                                    </FormItem>
-                                }}
-                            />
-                            <FormField 
-                                control={form.control}
-                                name="pincode"
-                                render={({field}) => {
-                                    return <FormItem className="w-3/6">
-                                        <FormLabel>Pincode</FormLabel>
-                                        <FormControl>
-                                            <Input type="number" className="h-9 border-amber-200 bg-white placeholder:text-gray-300 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-amber-400 focus-visible:ring-offset-0 "
-                                            placeholder="e.g. 596532"
-                                            {...field}
-                                            />
-                                        </FormControl>
-                                        <FormMessage className="text-xs"/>
-                                    </FormItem>
-                                }}
-                            />
-                            <FormField 
-                                control={form.control}
-                                name="qty"
-                                render={({field}) => {
-                                    return <FormItem className="w-3/6">
-                                        <FormLabel>Qty</FormLabel>
-                                        <FormControl>
-                                            <Input type="number" className="h-9 border-amber-200 bg-white placeholder:text-gray-300 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-amber-400 focus-visible:ring-offset-0 "
-                                            placeholder="e.g. 1"
-                                            {...field}
-                                            />
-                                        </FormControl>
-                                        <FormMessage className="text-xs"/>
-                                    </FormItem>
-                                }}
-                            />
-                        </div>
-                        <Separator className="my-6 bg-amber-900"/>
-                        <div className="flex items-center justify-between">
-                                <span className="text-3xl font-semibold">$50</span>
-                                <Button type="submit">Buy Now</Button>
-                        </div>
-                    </form>
+                  <form onSubmit={form.handleSubmit(onSubmit)}>
+                    <div className="flex gap-x-2 mt-2">
+                      <FormField
+                        control={form.control}
+                        name="address"
+                        render={({ field }) => {
+                          return (
+                            <FormItem className="w-3/6">
+                              <FormLabel>Address</FormLabel>
+                              <FormControl>
+                                <Textarea
+                                  className="border-amber-200 bg-white placeholder:text-gray-300 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-amber-400 focus-visible:ring-offset-0"
+                                  placeholder="e.g. Open Street 55"
+                                  {...field}
+                                />
+                              </FormControl>
+                              <FormMessage className="text-xs" />
+                            </FormItem>
+                          );
+                        }}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="pincode"
+                        render={({ field }) => {
+                          return (
+                            <FormItem className="w-3/6">
+                              <FormLabel>Pincode</FormLabel>
+                              <FormControl>
+                                <Input
+                                  type="number"
+                                  className="h-9 border-amber-200 bg-white placeholder:text-gray-300 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-amber-400 focus-visible:ring-offset-0 "
+                                  placeholder="e.g. 596532"
+                                  {...field}
+                                />
+                              </FormControl>
+                              <FormMessage className="text-xs" />
+                            </FormItem>
+                          );
+                        }}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="qty"
+                        render={({ field }) => {
+                          return (
+                            <FormItem className="w-3/6">
+                              <FormLabel>Qty</FormLabel>
+                              <FormControl>
+                                <Input
+                                  type="number"
+                                  className="h-9 border-amber-200 bg-white placeholder:text-gray-300 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-amber-400 focus-visible:ring-offset-0 "
+                                  placeholder="e.g. 1"
+                                  {...field}
+                                />
+                              </FormControl>
+                              <FormMessage className="text-xs" />
+                            </FormItem>
+                          );
+                        }}
+                      />
+                    </div>
+                    <Separator className="my-6 bg-amber-900" />
+                    <div className="flex items-center justify-between">
+                      <span className="text-3xl font-semibold">$50</span>
+                      {session ? (
+                        <Button type="submit">Buy Now</Button>
+                      ) : (
+                        <Link href={`/api/auth/signin?callbackUrl=${pathname}`}>
+                          <Button >Buy Now</Button>
+                        </Link>
+                      )}
+                    </div>
+                  </form>
                 </Form>
-                
               </>
             )}
           </div>
