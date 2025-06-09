@@ -3,11 +3,17 @@ import { products } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
 
+type Props = {
+  params: {
+    id: string;
+  };
+};
+
 export const GET = async (
   request: NextRequest,
-  context: { params: { id: string } }
+  { params }: Props
 ) => {
-  const id = context.params.id;
+  const id = params.id;
   try {
     const product = await db
       .select()
