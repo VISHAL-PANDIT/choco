@@ -18,7 +18,7 @@ export async function GET(
       return NextResponse.json({ message: "Product not found" }, { status: 400 });
     }
 
-    return NextResponse.json(product[0])
+    return NextResponse.json(product[0]);
   } catch (error) {
     return NextResponse.json(
       { message: "Product not found", error: error },
