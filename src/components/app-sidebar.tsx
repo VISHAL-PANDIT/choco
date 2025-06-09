@@ -3,7 +3,7 @@
 import * as React from "react";
 import {
   IconCamera,
-  IconFileAi,
+  IconBrain,
   IconFileDescription,
   IconInnerShadowTop,
   IconHome,
@@ -99,7 +99,7 @@ const data = {
     },
     {
       title: "Prompts",
-      icon: IconFileAi,
+      icon: IconBrain,
       url: "#",
       items: [
         {
