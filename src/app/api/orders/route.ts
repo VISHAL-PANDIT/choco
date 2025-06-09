@@ -51,15 +51,15 @@ export async function POST(request: Request) {
   }
 
   let transactionError: string = "";
-  let finalOrder: any = null;
+  let finalOrder: { id: number; price: number } | null = null;
   try {
-     finalOrder = await db.transaction(async (tx) => {
+    finalOrder = await db.transaction(async (tx) => {
       //create order
       const order = await tx
         .insert(orders)
         .values({
           ...validatedData,
-          //@ts-ignore
+          //@ts-expect-error - session.token.id exists but TypeScript doesn't know about it
           userId: session.token.id,
           price: foundProduct[0].price * validatedData.qty,
           status: "received",
@@ -83,7 +83,7 @@ export async function POST(request: Request) {
       if (availableStock.length < validatedData.qty) {
         transactionError = `Stock is low, only ${availableStock.length} products available`;
         tx.rollback();
-        return;
+        return null;
       }
 
       //check delivery person availibility
@@ -102,7 +102,7 @@ export async function POST(request: Request) {
       if (!availablePersons.length) {
         transactionError = `Delivery person is not available at the moment`;
         tx.rollback();
-        return;
+        return null;
       }
 
       //stock is available and delivery person is available
@@ -131,15 +131,19 @@ export async function POST(request: Request) {
         .where(eq(orders.id, order[0].id));
       return order[0];
     });
+
+    if (!finalOrder) {
+      return Response.json({ message: transactionError }, { status: 400 });
+    }
+
+    return Response.json({ order: finalOrder }, { status: 201 });
   } catch (error) {
     console.log(error);
-    return Response.json({
-      message: transactionError
-        ? transactionError
-        : "Error while db transaction",
-    },{status: 500});
+    return Response.json(
+      {
+        message: transactionError ? transactionError : "Error while db transaction",
+      },
+      { status: 500 }
+    );
   }
-
-  //create invoice
-
 }
