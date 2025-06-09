@@ -1,16 +1,18 @@
 "use client";
 
 import * as React from "react";
-import { IconCamera } from "@tabler/icons-react/dist/esm/icons/IconCamera";
-import { IconFileAi } from "@tabler/icons-react/dist/esm/icons/IconFileAi";
-import { IconFileDescription } from "@tabler/icons-react/dist/esm/icons/IconFileDescription";
-import { IconInnerShadowTop } from "@tabler/icons-react/dist/esm/icons/IconInnerShadowTop";
-import { IconHome } from "@tabler/icons-react/dist/esm/icons/IconHome";
-import { IconLayersLinked } from "@tabler/icons-react/dist/esm/icons/IconLayersLinked";
-import { IconBuildingWarehouse } from "@tabler/icons-react/dist/esm/icons/IconBuildingWarehouse";
-import { IconUsers } from "@tabler/icons-react/dist/esm/icons/IconUsers";
-import { IconShoppingCart } from "@tabler/icons-react/dist/esm/icons/IconShoppingCart";
-import { IconBox } from "@tabler/icons-react/dist/esm/icons/IconBox";
+import {
+  IconCamera,
+  IconFileAi,
+  IconFileDescription,
+  IconInnerShadowTop,
+  IconHome,
+  IconLayersLinked,
+  IconBuildingWarehouse,
+  IconUsers,
+  IconShoppingCart,
+  IconBox,
+} from "@tabler/icons-react";
 
 import { NavMain } from "@/components/nav-main";
 
