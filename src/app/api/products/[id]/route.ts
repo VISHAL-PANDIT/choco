@@ -3,16 +3,10 @@ import { products } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
 
-type Props = {
-  params: {
-    id: string;
-  };
-};
-
-export const GET = async (
+export async function GET(
   request: NextRequest,
-  { params }: Props
-) => {
+  { params }: { params: { id: string } }
+) {
   const id = params.id;
   try {
     const product = await db
